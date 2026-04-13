@@ -61,8 +61,8 @@ export default function MatieresPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">MatiÃ¨res</h1>
-          <p className="text-muted-foreground text-sm mt-0.5">GÃ©rez les matiÃ¨res par filiÃ¨re et niveau</p>
+          <h1 className="text-2xl font-bold text-foreground">Matières</h1>
+          <p className="text-muted-foreground text-sm mt-0.5">Gérez les matières par filière et niveau</p>
         </div>
         <Button onClick={openAdd} className="gap-2">
           <Plus className="w-4 h-4" /> Ajouter
@@ -72,16 +72,16 @@ export default function MatieresPage() {
       <div className="flex flex-wrap gap-3 items-center">
         <div className="relative flex-1 min-w-[200px] max-w-xs">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input placeholder="Rechercher une matiÃ¨reâ€¦" className="pl-9" value={search}
+          <Input placeholder="Rechercher une matière…" className="pl-9" value={search}
             onChange={(e) => setSearch(e.target.value)} />
         </div>
         <Select value={filterFiliereId || "__all"}
           onValueChange={(v) => { setFilterFiliereId(v === "__all" ? "" : v); setFilterNiveauId(""); }}>
           <SelectTrigger className="w-48"><SelectValue placeholder="Toutes les filiÃ¨res" /></SelectTrigger>
           <SelectContent>
-            <SelectItem value="__all">Toutes les filiÃ¨res</SelectItem>
+            <SelectItem value="__all">Toutes les filières</SelectItem>
             {filieresList.map((f) => (
-              <SelectItem key={f.id} value={f.id}>{f.code} â€” {f.name}</SelectItem>
+              <SelectItem key={f.id} value={f.id}>{f.name}</SelectItem>
             ))}
           </SelectContent>
         </Select>
@@ -102,7 +102,7 @@ export default function MatieresPage() {
           <TableHeader>
             <TableRow className="bg-muted/50">
               <TableHead>Nom</TableHead>
-              <TableHead>FiliÃ¨re</TableHead>
+              <TableHead>Filière</TableHead>
               <TableHead>Niveau</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
@@ -118,7 +118,7 @@ export default function MatieresPage() {
                   <TableCell className="font-medium">{item.name}</TableCell>
                   <TableCell>
                     {item.filiere
-                      ? <Badge variant="outline">{item.filiere.code}</Badge>
+                      ? <Badge variant="outline">{item.filiere.name}</Badge>
                       : <span className="text-muted-foreground text-sm">â€”</span>
                     }
                   </TableCell>

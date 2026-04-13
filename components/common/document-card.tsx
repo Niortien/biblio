@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Document, DocumentType, DOCUMENT_TYPE_LABELS } from "@/features/documents/types/document.type";
+import { getFiliereColors } from "@/lib/filiere-colors";
 
 
 interface DocumentCardProps {
@@ -39,16 +40,30 @@ const getTypeColor = (type: DocumentType) => {
 
 const DocumentCard = ({ document }: DocumentCardProps) => {
   const Icon = document.fileType === "image" ? FileImage : getTypeIcon(document.type);
+  const filiereColors = getFiliereColors(document.filiere?.code ?? "");
 
-  const handleDownload = () => {
-    const link = window.document.createElement("a");
-    link.href = document.fileUrl;
-    link.download = document.name;
-    link.click();
+  const handleDownload = async () => {
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8002";
+    const url = document.fileUrl.startsWith("http")
+      ? document.fileUrl
+      : `${baseUrl}/${document.fileUrl}`;
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error();
+      const blob = await res.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      const link = window.document.createElement("a");
+      link.href = objectUrl;
+      link.download = document.name;
+      link.click();
+      URL.revokeObjectURL(objectUrl);
+    } catch {
+      window.open(url, "_blank");
+    }
   };
 
   return (
-    <div className="bg-card rounded-2xl border border-border p-5 hover:shadow-elegant transition-all duration-300 group animate-scale-in">
+    <div className={`bg-card rounded-2xl border-2 ${filiereColors.border} p-5 hover:shadow-elegant transition-all duration-300 group animate-scale-in`}>
       <div className="flex items-start gap-4">
         {/* Icon */}
         <div
@@ -62,6 +77,12 @@ const DocumentCard = ({ document }: DocumentCardProps) => {
         {/* Content */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-2">
+            {/* Badge filière coloré */}
+            {document.filiere && (
+              <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${filiereColors.light} ${filiereColors.lightText}`}>
+                {document.filiere.code}
+              </span>
+            )}
             <span
               className={`text-xs font-medium px-2 py-1 rounded-full ${getTypeColor(
                 document.type
@@ -70,7 +91,7 @@ const DocumentCard = ({ document }: DocumentCardProps) => {
               {DOCUMENT_TYPE_LABELS[document.type]}
             </span>
             {document.niveau && (
-              <span className="text-xs text-muted-foreground">
+              <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${filiereColors.light} ${filiereColors.lightText}`}>
                 {document.niveau.name}
               </span>
             )}
@@ -103,7 +124,7 @@ const DocumentCard = ({ document }: DocumentCardProps) => {
               variant="ghost"
               size="sm"
               onClick={handleDownload}
-              className="gap-2 text-primary hover:text-primary hover:bg-primary/10"
+              className={`gap-2 ${filiereColors.lightText} hover:${filiereColors.light}`}
             >
               <Download className="w-4 h-4" />
               <span className="hidden sm:inline">Télécharger</span>

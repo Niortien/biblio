@@ -78,7 +78,7 @@ export default function NiveauxPage() {
           <TableHeader>
             <TableRow className="bg-muted/50">
               <TableHead>Nom</TableHead>
-              <TableHead>FiliÃ¨re</TableHead>
+              <TableHead>Filière</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -93,7 +93,7 @@ export default function NiveauxPage() {
                   <TableCell className="font-medium">{item.name}</TableCell>
                   <TableCell>
                     {item.filiere
-                      ? <Badge variant="outline">{item.filiere.code}</Badge>
+                      ? <Badge variant="outline">{item.filiere.name}</Badge>
                       : <span className="text-muted-foreground text-sm">â€”</span>
                     }
                   </TableCell>
@@ -185,9 +185,9 @@ function NiveauForm({ form, setForm, filieres }: {
           <SelectTrigger><SelectValue placeholder="Choisir une filiÃ¨reâ€¦" /></SelectTrigger>
           <SelectContent>
             {filieres.length === 0
-              ? <SelectItem value="__none" disabled>Aucune filiÃ¨re</SelectItem>
+              ? <SelectItem value="__none" disabled>Aucune filière</SelectItem>
               : filieres.map((f) => (
-                  <SelectItem key={f.id} value={f.id}>{f.code} â€” {f.name}</SelectItem>
+                  <SelectItem key={f.id} value={f.id}> {f.name}</SelectItem>
                 ))
             }
           </SelectContent>

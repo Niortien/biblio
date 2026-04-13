@@ -50,8 +50,8 @@ export default function FilieresPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">FiliÃ¨res</h1>
-          <p className="text-muted-foreground text-sm mt-0.5">GÃ©rez les filiÃ¨res de l'Ã©tablissement</p>
+          <h1 className="text-2xl font-bold text-foreground">Filières</h1>
+          <p className="text-muted-foreground text-sm mt-0.5">Gérez les filières de l'établissement</p>
         </div>
         <Button onClick={openAdd} className="gap-2">
           <Plus className="w-4 h-4" /> Ajouter
@@ -60,7 +60,7 @@ export default function FilieresPage() {
 
       <div className="relative max-w-sm">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-        <Input placeholder="Rechercher par nom ou codeâ€¦" className="pl-9" value={search}
+        <Input placeholder="Rechercher par nom ou code…" className="pl-9" value={search}
           onChange={(e) => setSearch(e.target.value)} />
       </div>
 
