@@ -1,17 +1,13 @@
 import { ChevronRight } from "lucide-react";
-import { Level, Program } from "@/data/documents";
+import { Filiere } from "@/features/filieres/types/filiere.type";
 
 interface ProgramCardProps {
-  name: Program;
-  fullName: string;
-  levels: Level[];
+  filiere: Filiere;
   isSelected: boolean;
   onClick: () => void;
 }
 
-const ProgramCard = ({ name, fullName, levels, isSelected, onClick }: ProgramCardProps) => {
-  const isMaster = levels.includes('M1') || levels.includes('M2');
-
+const ProgramCard = ({ filiere, isSelected, onClick }: ProgramCardProps) => {
   return (
     <button
       onClick={onClick}
@@ -28,42 +24,31 @@ const ProgramCard = ({ name, fullName, levels, isSelected, onClick }: ProgramCar
               className={`text-xs font-medium px-2 py-1 rounded-full ${
                 isSelected
                   ? "bg-primary-foreground/20 text-primary-foreground"
-                  : isMaster
-                  ? "bg-secondary/20 text-secondary-foreground"
                   : "bg-primary/10 text-primary"
               }`}
             >
-              {isMaster ? "Master" : "Licence"}
+              {filiere.code}
             </span>
+            {!filiere.isActive && (
+              <span className="text-xs font-medium px-2 py-1 rounded-full bg-muted text-muted-foreground">
+                Inactive
+              </span>
+            )}
           </div>
           <h3
             className={`font-display text-lg font-semibold mb-1 ${
               isSelected ? "text-primary-foreground" : "text-foreground"
             }`}
           >
-            {name}
+            {filiere.code}
           </h3>
           <p
             className={`text-sm line-clamp-2 ${
               isSelected ? "text-primary-foreground/80" : "text-muted-foreground"
             }`}
           >
-            {fullName}
+            {filiere.name}
           </p>
-          <div className="flex gap-2 mt-3">
-            {levels.map((level) => (
-              <span
-                key={level}
-                className={`text-xs font-medium px-2 py-0.5 rounded ${
-                  isSelected
-                    ? "bg-primary-foreground/20"
-                    : "bg-muted text-muted-foreground"
-                }`}
-              >
-                {level}
-              </span>
-            ))}
-          </div>
         </div>
         <ChevronRight
           className={`w-5 h-5 flex-shrink-0 transition-transform group-hover:translate-x-1 ${

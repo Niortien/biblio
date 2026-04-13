@@ -1,108 +1,74 @@
-"use client";
-import {
-  documents,
-  DocumentType,
-  Level,
-  Program,
-  programs,
-} from "@/data/documents";
-import { FileX } from "lucide-react";
-import { useMemo, useState } from "react";
+﻿"use client";
+import { useDocumentsQuery } from "@/features/documents/queries/document.query";
+import { useFilieresQuery } from "@/features/filieres/queries/filiere.query";
+import { useNiveauxQuery } from "@/features/niveaux/queries/niveau.query";
+import { DocumentType } from "@/features/documents/types/document.type";
+import { Filiere } from "@/features/filieres/types/filiere.type";
+import { FileX, Loader2 } from "lucide-react";
+import { useState } from "react";
 import DocumentCard from "./document-card";
 import DocumentFilters from "./document-filters";
 import ProgramCard from "./program-card";
 
 const DocumentBrowser = () => {
-  const [selectedProgram, setSelectedProgram] = useState<Program | null>(null);
-  const [selectedLevel, setSelectedLevel] = useState<Level | "all">("all");
-  const [selectedType, setSelectedType] = useState<DocumentType | "all">("all");
+  const [selectedFiliere, setSelectedFiliere] = useState<Filiere | null>(null);
+  const [selectedNiveauId, setSelectedNiveauId] = useState<string | null>(null);
+  const [selectedType, setSelectedType] = useState<DocumentType | null>(null);
 
-  const selectedProgramData = useMemo(
-    () => programs.find((p) => p.name === selectedProgram),
-    [selectedProgram]
+  const { data: filieres, isLoading: filieresLoading } = useFilieresQuery();
+  const { data: niveaux } = useNiveauxQuery(
+    selectedFiliere ? { filiereId: selectedFiliere.id } : undefined
   );
+  const { data: documents, isLoading: docsLoading } = useDocumentsQuery({
+    filiereId: selectedFiliere?.id,
+    niveauId: selectedNiveauId ?? undefined,
+    type: selectedType ?? undefined,
+  });
 
-  const filteredDocuments = useMemo(() => {
-    let filtered = documents;
+  const filieresList = (filieres ?? []).filter((f) => f.isActive);
+  const niveauxList = niveaux ?? [];
+  const documentsList = documents ?? [];
 
-    if (selectedProgram) {
-      filtered = filtered.filter((doc) => doc.program === selectedProgram);
-    }
-
-    if (selectedLevel !== "all") {
-      filtered = filtered.filter((doc) => doc.level === selectedLevel);
-    }
-
-    if (selectedType !== "all") {
-      filtered = filtered.filter((doc) => doc.type === selectedType);
-    }
-
-    return filtered;
-  }, [selectedProgram, selectedLevel, selectedType]);
-
-  const handleProgramClick = (program: Program) => {
-    if (selectedProgram === program) {
-      setSelectedProgram(null);
+  const handleFiliereClick = (filiere: Filiere) => {
+    if (selectedFiliere?.id === filiere.id) {
+      setSelectedFiliere(null);
     } else {
-      setSelectedProgram(program);
-      setSelectedLevel("all");
+      setSelectedFiliere(filiere);
+      setSelectedNiveauId(null);
     }
   };
 
   return (
     <div className="py-16 md:py-24">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Programs Section */}
+        {/* Filieres Section */}
         <section id="programs" className="mb-16">
           <div className="text-center mb-10">
             <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4">
-              Choisissez votre filière
+              Choisissez votre filiÃ¨re
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Sélectionnez votre filière pour accéder à tous les documents
+              SÃ©lectionnez votre filiÃ¨re pour accÃ©der Ã  tous les documents
               disponibles
             </p>
           </div>
 
-          {/* Licence Programs */}
-          <div className="mb-10">
-            <h3 className="font-display text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full gradient-primary" />
-              Licence
-            </h3>
+          {filieresLoading ? (
+            <div className="flex justify-center py-12">
+              <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+            </div>
+          ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {programs
-                .filter((p) => p.levels.includes("L1"))
-                .map((program) => (
-                  <ProgramCard
-                    key={program.name}
-                    {...program}
-                    isSelected={selectedProgram === program.name}
-                    onClick={() => handleProgramClick(program.name)}
-                  />
-                ))}
+              {filieresList.map((filiere) => (
+                <ProgramCard
+                  key={filiere.id}
+                  filiere={filiere}
+                  isSelected={selectedFiliere?.id === filiere.id}
+                  onClick={() => handleFiliereClick(filiere)}
+                />
+              ))}
             </div>
-          </div>
-
-          {/* Master Programs */}
-          <div>
-            <h3 className="font-display text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full gradient-secondary" />
-              Master
-            </h3>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {programs
-                .filter((p) => p.levels.includes("M1"))
-                .map((program) => (
-                  <ProgramCard
-                    key={program.name}
-                    {...program}
-                    isSelected={selectedProgram === program.name}
-                    onClick={() => handleProgramClick(program.name)}
-                  />
-                ))}
-            </div>
-          </div>
+          )}
         </section>
 
         {/* Documents Section */}
@@ -111,27 +77,27 @@ const DocumentBrowser = () => {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
               <div>
                 <h2 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-2">
-                  {selectedProgram
-                    ? `Documents - ${selectedProgram}`
+                  {selectedFiliere
+                    ? `Documents â€” ${selectedFiliere.code}`
                     : "Tous les documents"}
                 </h2>
                 <p className="text-muted-foreground">
-                  {filteredDocuments.length} document
-                  {filteredDocuments.length > 1 ? "s" : ""} disponible
-                  {filteredDocuments.length > 1 ? "s" : ""}
+                  {docsLoading
+                    ? "Chargementâ€¦"
+                    : `${documentsList.length} document${documentsList.length !== 1 ? "s" : ""} disponible${documentsList.length !== 1 ? "s" : ""}`}
                 </p>
               </div>
 
-              {selectedProgram && (
+              {selectedFiliere && (
                 <button
                   onClick={() => {
-                    setSelectedProgram(null);
-                    setSelectedLevel("all");
-                    setSelectedType("all");
+                    setSelectedFiliere(null);
+                    setSelectedNiveauId(null);
+                    setSelectedType(null);
                   }}
                   className="text-sm text-primary hover:underline"
                 >
-                  Voir toutes les filières
+                  Voir toutes les filiÃ¨res
                 </button>
               )}
             </div>
@@ -139,20 +105,22 @@ const DocumentBrowser = () => {
             {/* Filters */}
             <div className="mb-8 pb-8 border-b border-border">
               <DocumentFilters
-                selectedLevel={selectedLevel}
+                selectedNiveauId={selectedNiveauId}
                 selectedType={selectedType}
-                onLevelChange={setSelectedLevel}
+                onNiveauChange={setSelectedNiveauId}
                 onTypeChange={setSelectedType}
-                availableLevels={
-                  selectedProgramData?.levels || ["L1", "L2", "L3", "M1", "M2"]
-                }
+                niveaux={niveauxList}
               />
             </div>
 
             {/* Documents Grid */}
-            {filteredDocuments.length > 0 ? (
+            {docsLoading ? (
+              <div className="flex justify-center py-16">
+                <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+              </div>
+            ) : documentsList.length > 0 ? (
               <div className="grid md:grid-cols-2 gap-4">
-                {filteredDocuments.map((doc) => (
+                {documentsList.map((doc) => (
                   <DocumentCard key={doc.id} document={doc} />
                 ))}
               </div>
@@ -160,11 +128,11 @@ const DocumentBrowser = () => {
               <div className="text-center py-16">
                 <FileX className="w-16 h-16 text-muted-foreground/50 mx-auto mb-4" />
                 <h3 className="font-display text-xl font-semibold text-foreground mb-2">
-                  Aucun document trouvé
+                  Aucun document trouvÃ©
                 </h3>
                 <p className="text-muted-foreground max-w-md mx-auto">
-                  Il n&apos;y a pas encore de documents correspondant à vos
-                  critères de recherche. Essayez de modifier vos filtres.
+                  Il n&apos;y a pas encore de documents correspondant Ã  vos
+                  critÃ¨res. Essayez de modifier vos filtres.
                 </p>
               </div>
             )}
@@ -174,5 +142,6 @@ const DocumentBrowser = () => {
     </div>
   );
 };
+
 
 export default DocumentBrowser;

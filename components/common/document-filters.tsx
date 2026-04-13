@@ -1,48 +1,53 @@
-import { DocumentType, documentTypes, Level } from "@/data/documents";
+import { DocumentType, DOCUMENT_TYPE_LABELS } from "@/features/documents/types/document.type";
+import { Niveau } from "@/features/niveaux/types/niveau.type";
 import { Button } from "@/components/ui/button";
 
+const DOCUMENT_TYPES: DocumentType[] = ["devoir", "sujet_examen", "td", "tp", "support_cours"];
+
 interface DocumentFiltersProps {
-  selectedLevel: Level | "all";
-  selectedType: DocumentType | "all";
-  onLevelChange: (level: Level | "all") => void;
-  onTypeChange: (type: DocumentType | "all") => void;
-  availableLevels: Level[];
+  selectedNiveauId: string | null;
+  selectedType: DocumentType | null;
+  onNiveauChange: (niveauId: string | null) => void;
+  onTypeChange: (type: DocumentType | null) => void;
+  niveaux: Niveau[];
 }
 
 const DocumentFilters = ({
-  selectedLevel,
+  selectedNiveauId,
   selectedType,
-  onLevelChange,
+  onNiveauChange,
   onTypeChange,
-  availableLevels,
+  niveaux,
 }: DocumentFiltersProps) => {
   return (
     <div className="space-y-4">
-      {/* Level filters */}
-      <div>
-        <h4 className="text-sm font-medium text-foreground mb-3">Niveau</h4>
-        <div className="flex flex-wrap gap-2">
-          <Button
-            variant={selectedLevel === "all" ? "default" : "outline"}
-            size="sm"
-            onClick={() => onLevelChange("all")}
-            className="rounded-full"
-          >
-            Tous
-          </Button>
-          {availableLevels.map((level) => (
+      {/* Niveau filters */}
+      {niveaux.length > 0 && (
+        <div>
+          <h4 className="text-sm font-medium text-foreground mb-3">Niveau</h4>
+          <div className="flex flex-wrap gap-2">
             <Button
-              key={level}
-              variant={selectedLevel === level ? "default" : "outline"}
+              variant={selectedNiveauId === null ? "default" : "outline"}
               size="sm"
-              onClick={() => onLevelChange(level)}
+              onClick={() => onNiveauChange(null)}
               className="rounded-full"
             >
-              {level}
+              Tous
             </Button>
-          ))}
+            {niveaux.map((niveau) => (
+              <Button
+                key={niveau.id}
+                variant={selectedNiveauId === niveau.id ? "default" : "outline"}
+                size="sm"
+                onClick={() => onNiveauChange(niveau.id)}
+                className="rounded-full"
+              >
+                {niveau.name}
+              </Button>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Type filters */}
       <div>
@@ -51,14 +56,14 @@ const DocumentFilters = ({
         </h4>
         <div className="flex flex-wrap gap-2">
           <Button
-            variant={selectedType === "all" ? "default" : "outline"}
+            variant={selectedType === null ? "default" : "outline"}
             size="sm"
-            onClick={() => onTypeChange("all")}
+            onClick={() => onTypeChange(null)}
             className="rounded-full"
           >
             Tous
           </Button>
-          {documentTypes.map(({ type, label }) => (
+          {DOCUMENT_TYPES.map((type) => (
             <Button
               key={type}
               variant={selectedType === type ? "default" : "outline"}
@@ -66,7 +71,7 @@ const DocumentFilters = ({
               onClick={() => onTypeChange(type)}
               className="rounded-full"
             >
-              {label}
+              {DOCUMENT_TYPE_LABELS[type]}
             </Button>
           ))}
         </div>

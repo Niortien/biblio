@@ -5,10 +5,10 @@ import {
   FileText,
   FlaskConical,
   GraduationCap,
-  Youtube,
+  FileImage,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Document, DocumentType } from "@/data/documents";
+import { Document, DocumentType, DOCUMENT_TYPE_LABELS } from "@/features/documents/types/document.type";
 
 
 interface DocumentCardProps {
@@ -17,62 +17,33 @@ interface DocumentCardProps {
 
 const getTypeIcon = (type: DocumentType) => {
   switch (type) {
-    case "cours":
-      return BookOpen;
-    case "td":
-      return FileText;
-    case "tp":
-      return FlaskConical;
-    case "devoir":
-      return ClipboardList;
-    case "examen":
-      return GraduationCap;
-    default:
-      return FileText;
-  }
-};
-
-const getTypeLabel = (type: DocumentType) => {
-  switch (type) {
-    case "cours":
-      return "Cours";
-    case "td":
-      return "TD";
-    case "tp":
-      return "TP";
-    case "devoir":
-      return "Devoir";
-    case "examen":
-      return "Examen";
-    default:
-      return type;
+    case "support_cours": return BookOpen;
+    case "td": return FileText;
+    case "tp": return FlaskConical;
+    case "devoir": return ClipboardList;
+    case "sujet_examen": return GraduationCap;
+    default: return FileText;
   }
 };
 
 const getTypeColor = (type: DocumentType) => {
   switch (type) {
-    case "cours":
-      return "bg-primary/10 text-primary";
-    case "td":
-      return "bg-blue-500/10 text-blue-600";
-    case "tp":
-      return "bg-green-500/10 text-green-600";
-    case "devoir":
-      return "bg-orange-500/10 text-orange-600";
-    case "examen":
-      return "bg-red-500/10 text-red-600";
-    default:
-      return "bg-muted text-muted-foreground";
+    case "support_cours": return "bg-primary/10 text-primary";
+    case "td": return "bg-blue-500/10 text-blue-600";
+    case "tp": return "bg-green-500/10 text-green-600";
+    case "devoir": return "bg-orange-500/10 text-orange-600";
+    case "sujet_examen": return "bg-red-500/10 text-red-600";
+    default: return "bg-muted text-muted-foreground";
   }
 };
 
 const DocumentCard = ({ document }: DocumentCardProps) => {
-  const Icon = getTypeIcon(document.type);
+  const Icon = document.fileType === "image" ? FileImage : getTypeIcon(document.type);
 
   const handleDownload = () => {
     const link = window.document.createElement("a");
     link.href = document.fileUrl;
-    link.download = document.fileName;
+    link.download = document.name;
     link.click();
   };
 
@@ -85,7 +56,7 @@ const DocumentCard = ({ document }: DocumentCardProps) => {
             document.type
           )}`}
         >
-          <Youtube className="w-6 h-6" />
+          <Icon className="w-6 h-6" />
         </div>
 
         {/* Content */}
@@ -96,29 +67,31 @@ const DocumentCard = ({ document }: DocumentCardProps) => {
                 document.type
               )}`}
             >
-              {getTypeLabel(document.type)}
+              {DOCUMENT_TYPE_LABELS[document.type]}
             </span>
-            <span className="text-xs text-muted-foreground">
-              {document.level}
-            </span>
+            {document.niveau && (
+              <span className="text-xs text-muted-foreground">
+                {document.niveau.name}
+              </span>
+            )}
           </div>
 
           <h3 className="font-display text-base font-semibold text-foreground mb-1 line-clamp-1 group-hover:text-primary transition-colors">
-            {document.title}
+            {document.name}
           </h3>
 
-          {document.description && (
-            <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
-              {document.description}
+          {document.matiere && (
+            <p className="text-sm text-muted-foreground line-clamp-1 mb-3">
+              {document.matiere.name}
             </p>
           )}
 
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3 text-xs text-muted-foreground">
-              <span>{document.fileSize}</span>
+              <span className="uppercase">{document.fileType}</span>
               <span>•</span>
               <span>
-                {new Date(document.uploadDate).toLocaleDateString("fr-FR", {
+                {new Date(document.createdAt).toLocaleDateString("fr-FR", {
                   day: "numeric",
                   month: "short",
                   year: "numeric",
