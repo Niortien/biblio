@@ -11,6 +11,7 @@ import {
   Library,
   Layers,
   LogOut,
+  Users,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -20,6 +21,7 @@ const navItems = [
   { href: "/dashboard/filieres", label: "Filières", icon: Library },
   { href: "/dashboard/matieres", label: "Matières", icon: BookOpen },
   { href: "/dashboard/niveaux", label: "Niveaux", icon: Layers },
+  { href: "/dashboard/etudiants", label: "Étudiants", icon: Users },
 ];
 
 function parseJwt(token: string): { email?: string; role?: string } | null {

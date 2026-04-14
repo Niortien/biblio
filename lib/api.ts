@@ -54,7 +54,12 @@ async function request<TResponse, TBody = unknown>(
     return undefined as TResponse;
   }
 
-  return response.json() as Promise<TResponse>;
+  const text = await response.text();
+  if (!text) {
+    return undefined as TResponse;
+  }
+
+  return JSON.parse(text) as TResponse;
 }
 
 export const api = { request };

@@ -1,3 +1,5 @@
+"use client";
+
 import { GraduationCap, Menu, X } from "lucide-react";
 import { useState } from "react";
 
@@ -45,6 +47,16 @@ const Header = () => {
               Documents
             </Link>
           </nav>
+
+          {/* CTA Espace Étudiant */}
+          <div className="hidden md:block">
+            <Button asChild size="sm">
+              <Link href="/espace-etudiant/login">
+                <GraduationCap className="w-4 h-4 mr-1.5" />
+                Espace Étudiant
+              </Link>
+            </Button>
+          </div>
 
           {/* Mobile Menu Button */}
           <Button
