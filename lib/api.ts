@@ -29,9 +29,15 @@ async function request<TResponse, TBody = unknown>(
 
   const isFormData = data instanceof FormData;
 
-  const headers: HeadersInit = isFormData
-    ? {} // laisser le browser définir Content-Type + boundary
-    : { "Content-Type": "application/json" };
+  const token =
+    typeof window !== "undefined"
+      ? (localStorage.getItem("access_token") ?? localStorage.getItem("etudiant_token"))
+      : null;
+
+  const headers: HeadersInit = {
+    ...(isFormData ? {} : { "Content-Type": "application/json" }),
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
 
   const response = await fetch(url, {
     method,

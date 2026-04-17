@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { GraduationCap, LogOut, Menu, X } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { GraduationCap, LogOut, Menu, X, CreditCard, BookOpen, Bus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface Props {
@@ -14,7 +15,13 @@ interface Props {
 
 export default function EtudiantHeader({ firstName, lastName, email, onLogout }: Props) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
   const initials = `${firstName?.charAt(0) ?? ""}${lastName?.charAt(0) ?? ""}`.toUpperCase();
+
+  const navLinks = [
+    { href: "/espace-etudiant/notes",     label: "Mes notes",    icon: BookOpen },
+    { href: "/espace-etudiant/scolarite", label: "Scolarite & Transport", icon: CreditCard },
+  ];
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-card/80 backdrop-blur-xl border-b border-border">
@@ -32,7 +39,25 @@ export default function EtudiantHeader({ firstName, lastName, email, onLogout }:
             </div>
           </Link>
 
-          {/* Desktop */}
+          {/* Desktop nav */}
+          <nav className="hidden md:flex items-center gap-1">
+            {navLinks.map(({ href, label, icon: Icon }) => (
+              <Link
+                key={href}
+                href={href}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                  pathname === href
+                    ? "bg-primary/10 text-primary"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                }`}
+              >
+                <Icon className="w-3.5 h-3.5" />
+                {label}
+              </Link>
+            ))}
+          </nav>
+
+          {/* Desktop user + logout */}
           <div className="hidden md:flex items-center gap-3">
             <div className="flex items-center gap-2.5 bg-linear-to-r from-primary/10 to-primary/5 border border-primary/20 rounded-full pl-1.5 pr-4 py-1 animate-fade-in">
               <div className="w-7 h-7 rounded-full bg-linear-to-br from-primary to-primary/80 flex items-center justify-center text-primary-foreground text-xs font-bold shadow shadow-primary/40">
@@ -78,6 +103,26 @@ export default function EtudiantHeader({ firstName, lastName, email, onLogout }:
               <p className="text-xs text-muted-foreground">{email}</p>
             </div>
           </div>
+
+          {/* Mobile nav links */}
+          <nav className="space-y-1">
+            {navLinks.map(({ href, label, icon: Icon }) => (
+              <Link
+                key={href}
+                href={href}
+                onClick={() => setMobileMenuOpen(false)}
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  pathname === href
+                    ? "bg-primary/10 text-primary"
+                    : "text-foreground hover:bg-muted"
+                }`}
+              >
+                <Icon className="w-4 h-4" />
+                {label}
+              </Link>
+            ))}
+          </nav>
+
           <Button
             variant="ghost"
             size="sm"

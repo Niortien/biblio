@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { CreditCard, Bus, GraduationCap, BookOpen, ArrowRight } from "lucide-react";
 import { useDocumentsQuery } from "@/features/documents/queries/document.query";
 import { useFilieresQuery } from "@/features/filieres/queries/filiere.query";
 import { useNiveauxQuery } from "@/features/niveaux/queries/niveau.query";
@@ -16,6 +18,7 @@ const EMOJIS = ["👋", "🎓", "📚", "✨", "🚀"];
 
 interface Props {
   user: {
+    id?: string;
     firstName: string;
     lastName: string;
     email: string;
@@ -78,6 +81,38 @@ export default function EtudiantPageContent({ user }: Props) {
           myFiliere={myFiliere}
           myNiveau={myNiveau}
         />
+
+        {/* Quick-access cards */}
+        {user.id && (
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+            <h2 className="text-lg font-bold text-foreground mb-4">Acces rapide</h2>
+            <div className="grid sm:grid-cols-2 gap-4">
+
+              <Link href="/espace-etudiant/notes" className="group flex items-center gap-4 p-5 rounded-2xl border border-border bg-card hover:border-green-300 hover:bg-green-50/50 transition-all">
+                <div className="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center shrink-0 group-hover:bg-green-500/20 transition-colors">
+                  <BookOpen className="w-6 h-6 text-green-600" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-foreground">Mes notes &amp; resultats</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">Bulletin academique et moyennes</p>
+                </div>
+                <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-green-600 group-hover:translate-x-1 transition-all" />
+              </Link>
+
+              <Link href="/espace-etudiant/scolarite" className="group flex items-center gap-4 p-5 rounded-2xl border border-border bg-card hover:border-blue-300 hover:bg-blue-50/50 transition-all">
+                <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center shrink-0 group-hover:bg-blue-500/20 transition-colors">
+                  <CreditCard className="w-6 h-6 text-blue-500" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-foreground">Scolarite &amp; Transport</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">Suivi des paiements et abonnements</p>
+                </div>
+                <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-blue-500 group-hover:translate-x-1 transition-all" />
+              </Link>
+
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );
