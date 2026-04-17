@@ -16,6 +16,7 @@ import {
   Bus,
   BarChart3,
   ClipboardList,
+  UserCog,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -26,6 +27,7 @@ const navItems = [
   { href: "/dashboard/matieres", label: "Matières", icon: BookOpen },
   { href: "/dashboard/niveaux", label: "Niveaux", icon: Layers },
   { href: "/dashboard/etudiants", label: "Étudiants", icon: Users },
+  { href: "/dashboard/professeurs", label: "Professeurs", icon: UserCog },
   { href: "/dashboard/notes", label: "Notes & Résultats", icon: ClipboardList },
   { href: "/dashboard/scolarite", label: "Scolarité", icon: BadgeDollarSign },
   { href: "/dashboard/transport", label: "Transport", icon: Bus },

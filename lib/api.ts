@@ -7,6 +7,8 @@ interface RequestOptions<TBody = unknown> {
   method?: HttpMethod;
   data?: TBody;
   searchParams?: Record<string, string | number | boolean | undefined>;
+  /** Force a specific localStorage key for the auth token */
+  tokenKey?: string;
 }
 
 async function request<TResponse, TBody = unknown>(
@@ -31,7 +33,9 @@ async function request<TResponse, TBody = unknown>(
 
   const token =
     typeof window !== "undefined"
-      ? (localStorage.getItem("access_token") ?? localStorage.getItem("etudiant_token"))
+      ? options.tokenKey
+        ? localStorage.getItem(options.tokenKey)
+        : (localStorage.getItem("access_token") ?? localStorage.getItem("professeur_token") ?? localStorage.getItem("etudiant_token"))
       : null;
 
   const headers: HeadersInit = {
