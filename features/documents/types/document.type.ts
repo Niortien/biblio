@@ -29,6 +29,7 @@ export interface DocumentsParams {
   filiereId?: string;
   niveauId?: string;
   matiereId?: string;
+  type?: DocumentType;
 }
 
 export interface DocumentAddDTO {

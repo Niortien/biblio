@@ -120,8 +120,8 @@ export default function MatieresPage() {
                 <TableRow key={item.id}>
                   <TableCell className="font-medium">
                     <span className="flex items-center gap-2">
-                      {item.isModule && <Layers className="w-3.5 h-3.5 text-primary shrink-0" title="Module" />}
-                      {item.parentId && !item.isModule && <GitBranch className="w-3.5 h-3.5 text-muted-foreground shrink-0" title="Sous-matiere" />}
+                      {item.isModule && <Layers className="w-3.5 h-3.5 text-primary shrink-0" aria-label="Module" />}
+                      {item.parentId && !item.isModule && <GitBranch className="w-3.5 h-3.5 text-muted-foreground shrink-0" aria-label="Sous-matiere" />}
                       {item.name}
                     </span>
                     {item.parentId && item.parent && (

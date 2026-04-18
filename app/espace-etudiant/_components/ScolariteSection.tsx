@@ -119,7 +119,7 @@ export default function ScolariteSection({ userId }: Props) {
                 </div>
                 {(s.echeances ?? []).map((e) => {
                   const r = Number(e.montantDu) - Number(e.montantPaye);
-                  const ePct = e.montantDu > 0 ? Math.min(100, Math.round((Number(e.montantPaye) / Number(e.montantDu)) * 100)) : 0;
+                  const ePct = Number(e.montantDu) > 0 ? Math.min(100, Math.round((Number(e.montantPaye) / Number(e.montantDu)) * 100)) : 0;
                   return (
                     <div key={e.id} className="rounded-xl bg-muted/30 px-3 py-2.5">
                       <div className="flex items-center justify-between gap-2">

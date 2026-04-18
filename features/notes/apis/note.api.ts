@@ -33,7 +33,7 @@ export const noteAPI = {
     return api.request<NoteEtudiant[]>({
       endpoint: "notes",
       method: "GET",
-      searchParams: params as Record<string, string | number | boolean | undefined>,
+      searchParams: params as unknown as Record<string, string | number | boolean | undefined>,
     });
   },
 
