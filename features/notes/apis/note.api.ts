@@ -50,6 +50,7 @@ export const noteAPI = {
       endpoint: "notes/mon-bulletin",
       method: "GET",
       searchParams: { anneeAcademique },
+      tokenKey: "etudiant_token",
     });
   },
 };

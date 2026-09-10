@@ -24,7 +24,7 @@ export default function NotesFiliereListPage() {
   const niveauName = decodeURIComponent(params.niveauName as string);
 
   const { data: allNiveaux, isLoading: niveauxLoad } = useNiveauxQuery();
-  const { data: users,      isLoading: usersLoad }   = useUsersQuery();
+  const { data: users,      isLoading: usersLoad }   = useUsersQuery({ role: "etudiant" });
   const { data: filieres }                           = useFilieresQuery();
 
   const filiereMap = useMemo(
@@ -32,7 +32,7 @@ export default function NotesFiliereListPage() {
     [filieres],
   );
 
-  const etudiants = (users ?? []).filter(u => u.role === "etudiant");
+  const etudiants = users ?? [];
 
   /** For this niveau name, get each (niveau, filiere) pair with student count */
   const entries = useMemo(() => {

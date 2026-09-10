@@ -239,8 +239,8 @@ export default function TransportPage() {
 
   const { data: configs, isLoading: loadingConfigs } = useTransportConfigsQuery();
   const { data: abonnements, isLoading: loadingAbo } = useTransportAbonnementsQuery();
-  const { data: users } = useUsersQuery();
-  const etudiants = (users ?? []).filter((u) => u.role === "etudiant");
+  const { data: users } = useUsersQuery({ role: "etudiant" });
+  const etudiants = users ?? [];
 
   const ajouterConfig = useAjouterTransportConfigMutation();
   const modifierConfig = useModifierTransportConfigMutation();

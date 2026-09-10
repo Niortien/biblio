@@ -25,13 +25,9 @@ export default function NotesPage() {
   const router = useRouter();
 
   const { data: allNiveaux, isLoading: niveauxLoad } = useNiveauxQuery();
-  const { data: users,      isLoading: usersLoad }   = useUsersQuery();
-  const { data: filieres }                           = useFilieresQuery();
+  const { data: users,      isLoading: usersLoad }   = useUsersQuery({ role: "etudiant" });
 
-  // suppress unused warning - filieres may be used for future filtering
-  void filieres;
-
-  const etudiants  = (users ?? []).filter(u => u.role === "etudiant");
+  const etudiants  = users ?? [];
   const niveauxList = allNiveaux ?? [];
 
   const niveauStats = useMemo(() => {

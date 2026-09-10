@@ -468,8 +468,8 @@ export default function ScolaritePage() {
 
   const { data: configs, isLoading: loadingConfigs } = useScolariteConfigsQuery();
   const { data: scolarites, isLoading: loadingScol } = useScolaritesQuery();
-  const { data: users } = useUsersQuery();
-  const etudiants = (users ?? []).filter((u) => u.role === "etudiant");
+  const { data: users } = useUsersQuery({ role: "etudiant" });
+  const etudiants = users ?? [];
 
   const ajouterConfig = useAjouterScolariteConfigMutation();
   const modifierConfig = useModifierScolariteConfigMutation();

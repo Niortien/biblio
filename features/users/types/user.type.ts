@@ -34,6 +34,14 @@ export interface UserAddDTO {
   imageUrl?: string;
 }
 
+export interface UsersParams {
+  search?: string;
+  role?: UserRole;
+  filiereId?: string;
+  niveauId?: string;
+  isActive?: boolean;
+}
+
 export interface UserUpdateDTO {
   firstName?: string;
   lastName?: string;

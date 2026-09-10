@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { GraduationCap, CheckCircle2, Clock, AlertCircle, XCircle, ChevronDown, ChevronUp } from "lucide-react";
-import { useBulletinQuery } from "@/features/notes/queries/note.query";
+import { useMonBulletinQuery } from "@/features/notes/queries/note.query";
 import {
   BulletinEtudiant,
   ResultatModule,
@@ -27,13 +27,12 @@ function fmt(n: number | null): string {
 }
 
 interface Props {
-  userId: string;
   annee?: string;
 }
 
-export default function NotesSection({ userId, annee: anneeProp }: Props) {
+export default function NotesSection({ annee: anneeProp }: Props) {
   const [annee] = useState(anneeProp ?? CURRENT_YEAR);
-  const { data: bulletin, isLoading, isError, error } = useBulletinQuery(userId, annee, { enabled: !!userId });
+  const { data: bulletin, isLoading, isError, error } = useMonBulletinQuery(annee);
   const [expandedModules, setExpandedModules] = useState<Set<string>>(new Set());
 
   const toggleModule = (id: string) => {

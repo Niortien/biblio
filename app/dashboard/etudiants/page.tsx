@@ -26,20 +26,12 @@ export default function EtudiantsPage() {
   const [editItem, setEditItem] = useState<User | null>(null);
   const [deleteItem, setDeleteItem] = useState<User | null>(null);
 
-  const { data, isLoading } = useUsersQuery();
+  const { data, isLoading } = useUsersQuery({ role: "etudiant", search: search || undefined });
   const ajouterMutation = useAjouterUtilisateurMutation();
   const modifierMutation = useModifierUtilisateurMutation();
   const supprimerMutation = useSupprimerUtilisateurMutation();
 
-  const items = (data ?? []).filter((u) => {
-    if (!search) return true;
-    const q = search.toLowerCase();
-    return (
-      u.firstName.toLowerCase().includes(q) ||
-      u.lastName.toLowerCase().includes(q) ||
-      u.email.toLowerCase().includes(q)
-    );
-  });
+  const items = data ?? [];
 
   const handleAdd = async (form: UserAddDTO, imageFile: File | null) => {
     if (!form.firstName || !form.lastName || !form.email || !form.password) {

@@ -84,8 +84,8 @@ export default function NotesPage() {
             </Select>
           </div>
 
-          {user.id ? (
-            <NotesSectionWithYear userId={user.id} annee={annee} />
+          {user ? (
+            <NotesSectionWithYear annee={annee} />
           ) : (
             <div className="flex items-center justify-center py-20 text-muted-foreground text-sm">
               Impossible de charger vos informations. Veuillez vous reconnecter.
@@ -98,6 +98,6 @@ export default function NotesPage() {
 }
 
 // Wrapper to pass annee to NotesSection — reuse existing component with key to reset on year change
-function NotesSectionWithYear({ userId, annee }: { userId: string; annee: string }) {
-  return <NotesSection key={annee} userId={userId} annee={annee} />;
+function NotesSectionWithYear({ annee }: { annee: string }) {
+  return <NotesSection key={annee} annee={annee} />;
 }

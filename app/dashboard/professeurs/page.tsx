@@ -217,18 +217,8 @@ export default function ProfesseursPage() {
   const [search, setSearch] = useState("");
   const [selectedProf, setSelectedProf] = useState<User | null>(null);
 
-  const { data: allUsers = [], isLoading } = useUsersQuery();
-  const professeurs = allUsers
-    .filter((u) => u.role === "professeur")
-    .filter((u) => {
-      if (!search) return true;
-      const q = search.toLowerCase();
-      return (
-        u.firstName.toLowerCase().includes(q) ||
-        u.lastName.toLowerCase().includes(q) ||
-        u.email.toLowerCase().includes(q)
-      );
-    });
+  const { data: allUsers = [], isLoading } = useUsersQuery({ role: "professeur", search: search || undefined });
+  const professeurs = allUsers;
 
   return (
     <div className="space-y-6">

@@ -1,9 +1,13 @@
 import { api } from "@/lib/api";
-import { User, UserAddDTO, UserUpdateDTO } from "../types/user.type";
+import { User, UserAddDTO, UserUpdateDTO, UsersParams } from "../types/user.type";
 
 export const userAPI = {
-  obtenirTousUtilisateurs(): Promise<User[]> {
-    return api.request<User[]>({ endpoint: "users", method: "GET" });
+  obtenirTousUtilisateurs(params?: UsersParams): Promise<User[]> {
+    return api.request<User[]>({
+      endpoint: "users",
+      method: "GET",
+      searchParams: params as Record<string, string | number | boolean | undefined>,
+    });
   },
 
   obtenirUtilisateur(id: string): Promise<User> {

@@ -94,15 +94,15 @@ export default function NotesEtudiantsPage() {
   // ── Data ──────────────────────────────────────────────────────────────────
   const { data: allNiveaux }           = useNiveauxQuery();
   const { data: filieres }             = useFilieresQuery();
-  const { data: users, isLoading: usersLoad } = useUsersQuery();
+  const { data: users, isLoading: usersLoad } = useUsersQuery({ role: "etudiant", niveauId });
   const { data: matieres }             = useMatieresQuery({ niveauId });
 
   const niveau  = (allNiveaux ?? []).find(n => n.id === niveauId);
   const filiere = (filieres ?? []).find(f => f.id === niveau?.filiereId);
 
   const etudiants = useMemo(
-    () => (users ?? []).filter(u => u.role === "etudiant" && u.niveauId === niveauId),
-    [users, niveauId],
+    () => users ?? [],
+    [users],
   );
 
   const matieresFiltrees = useMemo(

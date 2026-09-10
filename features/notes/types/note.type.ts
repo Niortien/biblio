@@ -69,5 +69,9 @@ export interface SaisirSessionDTO {
 export interface NotesParams {
   etudiantId?: string;
   matiereId?: string;
-  anneeAcademique: string;
+  filiereId?: string;
+  niveauId?: string;
+  statut?: StatutNote;
+  anneeAcademique?: string;
+  search?: string;
 }
