@@ -55,9 +55,17 @@ async function request<TResponse, TBody = unknown>(
 
   if (!response.ok) {
     const errorBody = await response.text();
-    throw new Error(
-      errorBody || `Erreur ${response.status}: ${response.statusText}`
-    );
+    let message = errorBody || `Erreur ${response.status}: ${response.statusText}`;
+    if (errorBody) {
+      try {
+        const parsed = JSON.parse(errorBody);
+        if (typeof parsed?.message === "string") message = parsed.message;
+        else if (Array.isArray(parsed?.message)) message = parsed.message.join(", ");
+      } catch {
+        /* not JSON, keep raw text */
+      }
+    }
+    throw new Error(message);
   }
 
   if (response.status === 204) {

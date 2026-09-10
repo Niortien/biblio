@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { GraduationCap, LogOut, Menu, X, CreditCard, BookOpen, Bus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import ChangePasswordDialog from "@/components/common/ChangePasswordDialog";
 
 interface Props {
   firstName: string;
@@ -68,6 +69,7 @@ export default function EtudiantHeader({ firstName, lastName, email, onLogout }:
                 <p className="text-[10px] text-primary font-semibold uppercase tracking-widest">Étudiant</p>
               </div>
             </div>
+            <ChangePasswordDialog tokenKey="etudiant_token" />
             <Button
               variant="ghost"
               size="sm"
@@ -123,6 +125,7 @@ export default function EtudiantHeader({ firstName, lastName, email, onLogout }:
             ))}
           </nav>
 
+          <ChangePasswordDialog tokenKey="etudiant_token" triggerClassName="gap-2 w-full justify-start text-muted-foreground hover:text-foreground" />
           <Button
             variant="ghost"
             size="sm"

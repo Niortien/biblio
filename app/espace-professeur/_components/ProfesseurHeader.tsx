@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BookOpen, LogOut, Menu, X, GraduationCap, ClipboardList } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import ChangePasswordDialog from "@/components/common/ChangePasswordDialog";
 
 interface Props {
   firstName: string;
@@ -68,6 +69,9 @@ export default function ProfesseurHeader({ firstName, lastName, email, onLogout 
                 <p className="text-xs text-muted-foreground">{email}</p>
               </div>
             </div>
+            <div className="hidden sm:block">
+              <ChangePasswordDialog tokenKey="professeur_token" />
+            </div>
             <Button size="sm" variant="ghost" onClick={onLogout} className="text-muted-foreground hover:text-destructive">
               <LogOut className="w-4 h-4" />
               <span className="hidden sm:inline ml-1">Déconnexion</span>
@@ -102,6 +106,9 @@ export default function ProfesseurHeader({ firstName, lastName, email, onLogout 
                 {label}
               </Link>
             ))}
+            <div className="px-1 mt-1">
+              <ChangePasswordDialog tokenKey="professeur_token" triggerClassName="gap-2 w-full justify-start text-muted-foreground hover:text-foreground" />
+            </div>
           </div>
         )}
       </div>

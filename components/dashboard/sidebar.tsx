@@ -19,6 +19,7 @@ import {
   UserCog,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import ChangePasswordDialog from "@/components/common/ChangePasswordDialog";
 
 const navItems = [
   { href: "/dashboard", label: "Vue d'ensemble", icon: LayoutDashboard, exact: true },
@@ -125,6 +126,7 @@ export function DashboardSidebar() {
             </div>
           </div>
         )}
+        <ChangePasswordDialog triggerClassName="gap-2 w-full justify-start text-xs text-muted-foreground hover:text-foreground px-2" />
         <button
           onClick={handleLogout}
           className="flex items-center gap-2 w-full text-xs text-muted-foreground hover:text-destructive transition-colors px-2"
