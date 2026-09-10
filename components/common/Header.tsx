@@ -1,6 +1,6 @@
 "use client";
 
-import { GraduationCap, Menu, X } from "lucide-react";
+import { GraduationCap, Menu, Shield, X } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -48,8 +48,14 @@ const Header = () => {
             </Link>
           </nav>
 
-          {/* CTA Espace Étudiant */}
-          <div className="hidden md:block">
+          {/* CTA Espace Étudiant + Admin */}
+          <div className="hidden md:flex items-center gap-2">
+            <Button asChild size="sm" variant="outline">
+              <Link href="/login">
+                <Shield className="w-4 h-4 mr-1.5" />
+                Administration
+              </Link>
+            </Button>
             <Button asChild size="sm">
               <Link href="/espace-etudiant/login">
                 <GraduationCap className="w-4 h-4 mr-1.5" />
@@ -97,6 +103,22 @@ const Header = () => {
                 onClick={() => setIsMenuOpen(false)}
               >
                 Documents
+              </Link>
+              <Link
+                href="/login"
+                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors px-2 py-2 flex items-center gap-1.5"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <Shield className="w-4 h-4" />
+                Administration
+              </Link>
+              <Link
+                href="/espace-etudiant/login"
+                className="text-sm font-medium text-primary hover:text-primary/80 transition-colors px-2 py-2 flex items-center gap-1.5"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <GraduationCap className="w-4 h-4" />
+                Espace Étudiant
               </Link>
             </nav>
           </div>

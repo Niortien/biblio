@@ -8,6 +8,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import toast from "react-hot-toast";
+import { fetchWithRetry } from "@/lib/fetch-with-retry";
+
+const WAKEUP_TOAST_ID = "server-wakeup";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -23,11 +26,18 @@ export default function LoginPage() {
     }
     setIsLoading(true);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: form.email, password: form.password }),
-      });
+      const res = await fetchWithRetry(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/login`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: form.email, password: form.password }),
+        },
+        {
+          onRetry: () =>
+            toast.loading("Le serveur démarre, veuillez patienter...", { id: WAKEUP_TOAST_ID }),
+        }
+      );
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
         throw new Error(body?.message ?? "Identifiants incorrects");
@@ -40,8 +50,15 @@ export default function LoginPage() {
       toast.success("Connexion réussie");
       router.push("/dashboard");
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : "Erreur de connexion");
+      const message =
+        err instanceof TypeError
+          ? "Impossible de contacter le serveur. Réessayez dans quelques instants."
+          : err instanceof Error
+          ? err.message
+          : "Erreur de connexion";
+      toast.error(message);
     } finally {
+      toast.dismiss(WAKEUP_TOAST_ID);
       setIsLoading(false);
     }
   };

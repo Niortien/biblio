@@ -12,6 +12,9 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import { useFilieresQuery } from "@/features/filieres/queries/filiere.query";
 import { useNiveauxQuery } from "@/features/niveaux/queries/niveau.query";
+import { fetchWithRetry } from "@/lib/fetch-with-retry";
+
+const WAKEUP_TOAST_ID = "server-wakeup";
 
 export default function EtudiantInscriptionPage() {
   const router = useRouter();
@@ -50,19 +53,26 @@ export default function EtudiantInscriptionPage() {
     }
     setIsLoading(true);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/users`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          firstName: form.firstName,
-          lastName: form.lastName,
-          email: form.email,
-          password: form.password,
-          role: "etudiant",
-          ...(form.filiereId && { filiereId: form.filiereId }),
-          ...(form.niveauId && { niveauId: form.niveauId }),
-        }),
-      });
+      const res = await fetchWithRetry(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/users`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            firstName: form.firstName,
+            lastName: form.lastName,
+            email: form.email,
+            password: form.password,
+            role: "etudiant",
+            ...(form.filiereId && { filiereId: form.filiereId }),
+            ...(form.niveauId && { niveauId: form.niveauId }),
+          }),
+        },
+        {
+          onRetry: () =>
+            toast.loading("Le serveur démarre, veuillez patienter...", { id: WAKEUP_TOAST_ID }),
+        }
+      );
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
         throw new Error(body?.message ?? "Erreur lors de l'inscription");
@@ -70,8 +80,15 @@ export default function EtudiantInscriptionPage() {
       toast.success("Compte créé avec succès ! Vous pouvez vous connecter.");
       router.push("/espace-etudiant/login");
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : "Erreur lors de l'inscription");
+      const message =
+        err instanceof TypeError
+          ? "Impossible de contacter le serveur. Réessayez dans quelques instants."
+          : err instanceof Error
+          ? err.message
+          : "Erreur lors de l'inscription";
+      toast.error(message);
     } finally {
+      toast.dismiss(WAKEUP_TOAST_ID);
       setIsLoading(false);
     }
   };
